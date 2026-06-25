@@ -30,8 +30,11 @@ function db(): Sql {
       // Supabase/PgBouncer "transaction" havuzu ile uyum için:
       prepare: false,
       ssl: needsSsl(url) ? "require" : false,
-      max: 5, // havuzdaki en fazla bağlantı
+      // Sunucusuz ortam (Vercel) için: her örnekte tek bağlantı tut;
+      // böylece uzak havuza (Supabase) aynı anda çok bağlantı açıp takılmaz.
+      max: 1,
       idle_timeout: 20, // boşta kalan bağlantıyı 20 sn sonra kapat
+      connect_timeout: 15, // bağlanamazsa 15 sn'de hata ver (sonsuz takılma yok)
     });
   }
   return globalForPg._pgSql;
