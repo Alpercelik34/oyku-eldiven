@@ -3,18 +3,12 @@ import { notFound } from "next/navigation";
 import {
   getCategory,
   getProduct,
-  getProducts,
   getProductsByCategory,
   getSettings,
 } from "@/lib/db";
 import { formatTRY } from "@/lib/format";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { ProductCard } from "@/components/ProductCard";
-
-export async function generateStaticParams() {
-  const products = await getProducts();
-  return products.map((p) => ({ slug: p.slug }));
-}
 
 export async function generateMetadata(props: PageProps<"/urunler/[slug]">) {
   const { slug } = await props.params;

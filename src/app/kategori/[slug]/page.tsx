@@ -7,11 +7,6 @@ import {
 } from "@/lib/db";
 import { ProductCard } from "@/components/ProductCard";
 
-export async function generateStaticParams() {
-  const categories = await getCategories();
-  return categories.map((c) => ({ slug: c.slug }));
-}
-
 export async function generateMetadata(props: PageProps<"/kategori/[slug]">) {
   const { slug } = await props.params;
   const category = await getCategory(slug);

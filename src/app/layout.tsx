@@ -14,6 +14,11 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+// Tüm siteyi istek anında (dinamik) render et. Veriler veritabanından geldiği
+// için build sırasında statik üretim yapılmaz — böylece canlı build DB'ye
+// bağlanmaya çalışıp takılmaz ve admin değişiklikleri anında yansır.
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
   return {
