@@ -5,6 +5,7 @@ import { CartProvider } from "@/lib/cart";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingContact } from "@/components/FloatingContact";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getCategories, getSettings } from "@/lib/db";
 import { SettingsProvider } from "@/lib/settings-context";
 import { themeCssVars } from "@/lib/settings";
@@ -56,6 +57,7 @@ export default async function RootLayout({
             />
           </CartProvider>
         </SettingsProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
