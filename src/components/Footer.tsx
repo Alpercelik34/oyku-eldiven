@@ -17,7 +17,7 @@ export function Footer({
             <span className="grid place-items-center w-8 h-8 rounded-lg bg-brand-600 text-white font-bold">
               {settings.logoLetter}
             </span>
-            <span className="font-bold text-lg text-white">
+            <span className="font-bold text-lg text-brand-400">
               {settings.siteName}
             </span>
           </div>
@@ -33,7 +33,7 @@ export function Footer({
           <ul className="space-y-2 text-sm text-ink-300">
             {categories.slice(0, 6).map((c) => (
               <li key={c.slug}>
-                <Link href={`/kategori/${c.slug}`} className="hover:text-white">
+                <Link href={`/kategori/${c.slug}`} className="hover:text-brand-400">
                   {c.name}
                 </Link>
               </li>
@@ -45,22 +45,22 @@ export function Footer({
           <h3 className="font-semibold text-white mb-3">Kurumsal</h3>
           <ul className="space-y-2 text-sm text-ink-300">
             <li>
-              <Link href="/hakkimizda" className="hover:text-white">
+              <Link href="/hakkimizda" className="hover:text-brand-400">
                 Hakkımızda
               </Link>
             </li>
             <li>
-              <Link href="/iletisim" className="hover:text-white">
+              <Link href="/iletisim" className="hover:text-brand-400">
                 İletişim
               </Link>
             </li>
             <li>
-              <Link href="/urunler" className="hover:text-white">
+              <Link href="/urunler" className="hover:text-brand-400">
                 Tüm Ürünler
               </Link>
             </li>
             <li>
-              <Link href="/admin" className="hover:text-white">
+              <Link href="/admin" className="hover:text-brand-400">
                 Yönetim Paneli
               </Link>
             </li>
