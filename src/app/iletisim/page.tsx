@@ -1,6 +1,11 @@
 import { getSettings } from "@/lib/db";
 
-export const metadata = { title: "İletişim" };
+export const metadata = {
+  title: "İletişim",
+  description:
+    "Öykü Eldiven ile iletişime geçin: telefon, WhatsApp ve e-posta ile toptan eldiven ve medikal sarf malzemesi teklifi alın.",
+  alternates: { canonical: "/iletisim" },
+};
 
 export default async function ContactPage() {
   const settings = await getSettings();

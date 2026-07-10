@@ -10,7 +10,21 @@ import { ProductCard } from "@/components/ProductCard";
 export async function generateMetadata(props: PageProps<"/kategori/[slug]">) {
   const { slug } = await props.params;
   const category = await getCategory(slug);
-  return { title: category?.name ?? "Kategori" };
+  if (!category) return { title: "Kategori" };
+  const description =
+    category.description ||
+    `${category.name} kategorisindeki ürünleri toptan ve perakende fiyatlarla inceleyin.`;
+  return {
+    title: `${category.name} — Toptan Fiyatlarla`,
+    description,
+    alternates: { canonical: `/kategori/${category.slug}` },
+    openGraph: {
+      type: "website",
+      url: `/kategori/${category.slug}`,
+      title: category.name,
+      description,
+    },
+  };
 }
 
 export default async function CategoryPage(

@@ -2,7 +2,12 @@ import Link from "next/link";
 import { getCategories, getProducts } from "@/lib/db";
 import { ProductCard } from "@/components/ProductCard";
 
-export const metadata = { title: "Tüm Ürünler" };
+export const metadata = {
+  title: "Tüm Ürünler — Eldiven ve Medikal Sarf Malzemeleri",
+  description:
+    "Nitril, lateks ve vinil eldivenler, maske, dezenfektan ve tıbbi sarf malzemeleri. Toptan ve perakende satış, hızlı kargo.",
+  alternates: { canonical: "/urunler" },
+};
 
 export default async function ProductsPage() {
   const [products, categories] = await Promise.all([

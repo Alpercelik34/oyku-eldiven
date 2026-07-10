@@ -10,6 +10,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getCategories, getSettings } from "@/lib/db";
 import { SettingsProvider } from "@/lib/settings-context";
 import { themeCssVars } from "@/lib/settings";
+import { SITE_BRAND, SITE_URL, absoluteUrl } from "@/lib/seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,12 +24,45 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
+  const title = `${SITE_BRAND} — ${settings.tagline}`;
+  const description = `${SITE_BRAND} (${settings.siteName}): ${settings.heroSubtitle}`;
   return {
+    metadataBase: new URL(SITE_URL),
     title: {
-      default: `${settings.siteName} — ${settings.tagline}`,
-      template: `%s | ${settings.siteName}`,
+      default: title,
+      template: `%s | ${SITE_BRAND}`,
     },
-    description: settings.heroSubtitle,
+    description,
+    keywords: [
+      "eldiven",
+      "öykü eldiven",
+      "nitril eldiven",
+      "lateks eldiven",
+      "vinil eldiven",
+      "muayene eldiveni",
+      "cerrahi eldiven",
+      "toptan eldiven",
+      "medikal sarf malzemeleri",
+    ],
+    alternates: { canonical: "/" },
+    openGraph: {
+      type: "website",
+      url: "/",
+      siteName: SITE_BRAND,
+      title,
+      description,
+      locale: "tr_TR",
+      images: settings.logoUrl ? [settings.logoUrl] : undefined,
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
   };
 }
 
@@ -41,12 +75,46 @@ export default async function RootLayout({
     getCategories(),
     getSettings(),
   ]);
+  // Google'ın işletmeyi tanıması için yapılandırılmış veri (Organization).
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE_BRAND,
+    alternateName: settings.siteName,
+    url: SITE_URL,
+    logo: settings.logoUrl ? absoluteUrl(settings.logoUrl) : undefined,
+    email: settings.email,
+    telephone: settings.phone,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: settings.address,
+      addressCountry: "TR",
+    },
+    sameAs: [settings.instagram, settings.facebook].filter(Boolean),
+  };
+  const webSiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_BRAND,
+    url: SITE_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${SITE_URL}/arama?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
   return (
     <html lang="tr" className={`${geistSans.variable} h-full antialiased`}>
       <body
         className="min-h-full flex flex-col bg-ink-50 text-ink-900"
         style={themeCssVars(settings.theme)}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([organizationJsonLd, webSiteJsonLd]),
+          }}
+        />
         <Script id="meta-pixel" strategy="afterInteractive">
           {`
             !function(f,b,e,v,n,t,s)

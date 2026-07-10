@@ -9,11 +9,28 @@ import {
 import { formatTRY } from "@/lib/format";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { ProductCard } from "@/components/ProductCard";
+import { SITE_BRAND, SITE_URL, absoluteUrl } from "@/lib/seo";
 
 export async function generateMetadata(props: PageProps<"/urunler/[slug]">) {
   const { slug } = await props.params;
   const product = await getProduct(slug);
-  return { title: product?.name ?? "Ürün" };
+  if (!product) return { title: "Ürün" };
+  const description =
+    product.description.length > 155
+      ? `${product.description.slice(0, 152)}...`
+      : product.description;
+  return {
+    title: product.name,
+    description,
+    alternates: { canonical: `/urunler/${product.slug}` },
+    openGraph: {
+      type: "website",
+      url: `/urunler/${product.slug}`,
+      title: `${product.name} | ${SITE_BRAND}`,
+      description,
+      images: product.image ? [product.image] : undefined,
+    },
+  };
 }
 
 export default async function ProductDetailPage(
@@ -34,8 +51,74 @@ export default async function ProductDetailPage(
       ? Math.round((1 - product.price / product.oldPrice) * 100)
       : 0;
 
+  // Google'da fiyat/stok bilgisiyle zengin sonuç için yapılandırılmış veri.
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: product.image ? absoluteUrl(product.image) : undefined,
+    sku: product.sku || undefined,
+    brand: product.brand
+      ? { "@type": "Brand", name: product.brand }
+      : undefined,
+    offers: {
+      "@type": "Offer",
+      url: absoluteUrl(`/urunler/${product.slug}`),
+      priceCurrency: "TRY",
+      price: product.price,
+      availability:
+        product.stock > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+      seller: { "@type": "Organization", name: SITE_BRAND },
+    },
+  };
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Ürünler",
+        item: absoluteUrl("/urunler"),
+      },
+      ...(category
+        ? [
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: category.name,
+              item: absoluteUrl(`/kategori/${category.slug}`),
+            },
+            {
+              "@type": "ListItem",
+              position: 4,
+              name: product.name,
+              item: absoluteUrl(`/urunler/${product.slug}`),
+            },
+          ]
+        : [
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: product.name,
+              item: absoluteUrl(`/urunler/${product.slug}`),
+            },
+          ]),
+    ],
+  };
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([productJsonLd, breadcrumbJsonLd]),
+        }}
+      />
       <nav className="text-sm text-ink-500 mb-6">
         <Link href="/" className="hover:text-brand-700">
           Ana Sayfa

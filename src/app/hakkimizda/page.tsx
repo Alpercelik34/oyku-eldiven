@@ -1,6 +1,11 @@
 import { getSettings } from "@/lib/db";
 
-export const metadata = { title: "Hakkımızda" };
+export const metadata = {
+  title: "Hakkımızda",
+  description:
+    "Öykü Eldiven; sağlık kuruluşları, eczaneler ve işletmeler için eldiven, maske ve medikal sarf malzemeleri tedarik eder. CE sertifikalı ürünler, toptan ve perakende satış.",
+  alternates: { canonical: "/hakkimizda" },
+};
 
 export default async function AboutPage() {
   const settings = await getSettings();

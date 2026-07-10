@@ -2,7 +2,10 @@ import Link from "next/link";
 import { getOrderById, getSettings } from "@/lib/db";
 import { formatTRY } from "@/lib/format";
 
-export const metadata = { title: "Siparişiniz Alındı" };
+export const metadata = {
+  title: "Siparişiniz Alındı",
+  robots: { index: false, follow: false },
+};
 
 export default async function OrderReceivedPage(
   props: PageProps<"/siparis-alindi">,

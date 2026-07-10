@@ -2,7 +2,10 @@ import Link from "next/link";
 import { searchProducts } from "@/lib/db";
 import { ProductCard } from "@/components/ProductCard";
 
-export const metadata = { title: "Arama Sonuçları" };
+export const metadata = {
+  title: "Arama Sonuçları",
+  robots: { index: false, follow: true },
+};
 
 export default async function SearchPage(props: PageProps<"/arama">) {
   const params = await props.searchParams;

@@ -4,7 +4,10 @@ import { isAuthed } from "@/lib/auth";
 import { logoutAction } from "./actions";
 import { LoginForm } from "./LoginForm";
 
-export const metadata = { title: "Yönetim Paneli" };
+export const metadata = {
+  title: "Yönetim Paneli",
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminLayout({
   children,
