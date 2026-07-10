@@ -40,9 +40,12 @@ export default async function ProductDetailPage(
   const product = await getProduct(slug);
   if (!product) notFound();
 
-  const category = await getCategory(product.category);
-  const settings = await getSettings();
-  const related = (await getProductsByCategory(product.category))
+  const [category, settings, categoryProducts] = await Promise.all([
+    getCategory(product.category),
+    getSettings(),
+    getProductsByCategory(product.category),
+  ]);
+  const related = categoryProducts
     .filter((p) => p.id !== product.id)
     .slice(0, 4);
 

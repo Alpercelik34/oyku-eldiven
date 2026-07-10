@@ -1,7 +1,8 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { CACHE_TAGS } from "@/lib/db";
 import {
   checkPassword,
   clearSession,
@@ -89,6 +90,7 @@ export async function saveProductAction(formData: FormData): Promise<void> {
   };
 
   await saveProduct(product);
+  revalidateTag(CACHE_TAGS.products);
   revalidatePath("/admin/urunler");
   revalidatePath("/urunler");
   revalidatePath("/");
@@ -100,6 +102,7 @@ export async function deleteProductAction(formData: FormData): Promise<void> {
   const id = String(formData.get("id") ?? "");
   if (id) {
     await deleteProduct(id);
+    revalidateTag(CACHE_TAGS.products);
     revalidatePath("/admin/urunler");
     revalidatePath("/urunler");
   }
@@ -190,6 +193,7 @@ export async function saveSettingsAction(formData: FormData): Promise<void> {
 
   await saveSettings(settings);
   // Tüm sayfaları tazele (görünüm her yerde değişebilir).
+  revalidateTag(CACHE_TAGS.settings);
   revalidatePath("/", "layout");
   redirect("/admin/gorunum?ok=1");
 }
@@ -214,6 +218,7 @@ export async function saveCategoryAction(formData: FormData): Promise<void> {
   };
 
   await saveCategory(category);
+  revalidateTag(CACHE_TAGS.categories);
   revalidatePath("/", "layout");
   revalidatePath("/admin/kategoriler");
   redirect("/admin/kategoriler?ok=1");
@@ -224,6 +229,7 @@ export async function deleteCategoryAction(formData: FormData): Promise<void> {
   const slug = String(formData.get("slug") ?? "");
   if (slug) {
     await deleteCategory(slug);
+    revalidateTag(CACHE_TAGS.categories);
     revalidatePath("/", "layout");
     revalidatePath("/admin/kategoriler");
   }
